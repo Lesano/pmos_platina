@@ -12,7 +12,7 @@ Xiaomi Mi 8 Lite (`xiaomi-platina`, SDM660) using the
 | Boot (fastboot)    | Working                                            |
 | USB networking/SSH | Working (see "Stability fixes")                    |
 | Display + console  | Working with the patch in `patches/` (sharp image) |
-| Backlight (WLED)   | Probes; brightness control not fully verified      |
+| Backlight (WLED)   | Working                                            |
 | ADSP / CDSP        | Running with firmware from the stock `modem` partition |
 | Touch (NT36672A)   | Not working (`Error reading from 0x00: -6`)        |
 | Wi-Fi, modem, audio| Not working yet (audio: `No dais found in DT`)    |

@@ -1,0 +1,4 @@
+adsp.*
+cdsp.*
+*.img
+*.dtb

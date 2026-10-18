@@ -1,0 +1,98 @@
+diff --git a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-platina.dts b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-platina.dts
+index 2ca576b05..9b46911fe 100644
+--- a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-platina.dts
++++ b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-platina.dts
+@@ -17,10 +17,24 @@
+ #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+ 
+ / {
++
+ 	model = "Xiaomi Mi 8 Lite";
+ 	compatible = "xiaomi,platina", "qcom,sdm660";
+ 	chassis-type = "handset";
+ 
++	/*
++	 * Emulates LCDB until there is a driver for QPNP LCDB.
++	 * Stock bootloader sets it to 5.4 V.
++	 */
++	lcdb_fixed: lcdb-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "lcdb";
++		regulator-min-microvolt = <5400000>;
++		regulator-max-microvolt = <5400000>;
++		regulator-always-on;
++		regulator-boot-on;
++	};
++
+ 	aliases {
+ 		serial0 = &blsp1_uart2;
+ 	};
+@@ -274,7 +288,7 @@ &gpucc {
+ };
+ 
+ &mmcc {
+-	status = "disabled";
++	status = "okay";
+ };
+ 
+ &pm660_gpios {
+@@ -789,3 +803,59 @@ &usb3_dwc3 {
+ 	dr_mode = "peripheral";
+ 	extcon = <&extcon_usb>;
+ };
++
++&mdss {
++	status = "okay";
++};
++
++&mdss_dsi0 {
++	status = "okay";
++
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	vdd-supply = <&vreg_l1b_0p925>;
++	vdda-supply = <&vreg_l1a_1p225>;
++
++	panel: panel@0 {
++		compatible = "tianma,fhd-video", "novatek,nt36672a";
++		reg = <0>;
++
++		reset-gpios = <&tlmm 53 GPIO_ACTIVE_LOW>;
++		backlight = <&pm660l_wled>;
++
++		vddio-supply = <&vreg_l11a_1p8>;
++		vddneg-supply = <&lcdb_fixed>;
++		vddpos-supply = <&lcdb_fixed>;
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&panel_reset_n &mdp_vsync_n>;
++
++		port {
++			panel_in: endpoint {
++				remote-endpoint = <&mdss_dsi0_out>;
++			};
++		};
++	};
++};
++
++&mdss_dsi0_out {
++	data-lanes = <0 1 2 3>;
++	remote-endpoint = <&panel_in>;
++};
++
++&mdss_dsi0_phy {
++	vcca-supply = <&vreg_l1b_0p925>;
++	status = "okay";
++};
++
++&mmss_smmu {
++	status = "okay";
++};
++
++&pm660l_wled {
++	qcom,switching-freq = <800>;
++	qcom,current-limit-microamp = <20000>;
++	qcom,num-strings = <2>;
++	status = "okay";
++};

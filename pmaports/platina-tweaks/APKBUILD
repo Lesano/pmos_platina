@@ -1,0 +1,29 @@
+maintainer="Leandro <leandro@example.com>"
+pkgname=platina-tweaks
+pkgver=1
+pkgrel=0
+pkgdesc="Local tweaks for Xiaomi Mi 8 Lite (no suspend, usb0 unmanaged, display modules)"
+url="https://postmarketos.org"
+arch="noarch"
+license="MIT"
+options="!check"
+source="
+	99-nosuspend-logind.conf
+	99-nosuspend-sleep.conf
+	99-usb0.conf
+	display.conf
+"
+builddir="$srcdir"
+
+package() {
+	install -Dm644 "$srcdir"/99-nosuspend-logind.conf "$pkgdir"/etc/elogind/logind.conf.d/99-nosuspend.conf
+	install -Dm644 "$srcdir"/99-nosuspend-sleep.conf "$pkgdir"/etc/elogind/sleep.conf.d/99-nosuspend.conf
+	install -Dm644 "$srcdir"/99-usb0.conf "$pkgdir"/etc/NetworkManager/conf.d/99-usb0.conf
+	install -Dm644 "$srcdir"/display.conf "$pkgdir"/etc/modules-load.d/display.conf
+}
+sha512sums="
+86aa0daa96672d5cbe8a849a1f8e3ff709a3c64a082db19d95e9074538df24c395d02c87662077061c8a3741f1e440dbc78b7dd49bb6bc1d833262fdfc8318a2  99-nosuspend-logind.conf
+7fa2ed6fc9c36a07a1e215f9e2dc6e85e92d3b60b33fb47805e65b59ef194fe918f759f4aa45829b255917aed01d2dce8098b8d53f02456ba482ef41964e91a5  99-nosuspend-sleep.conf
+98357776e02b8aff3b585280bf9d4a3082ae8ad694ac880616ca66fec423ee2a645bf65840194e51d0345c6a60fa4c426f183a955ac0233e77c1fa476fb90499  99-usb0.conf
+0aa70630ea52914dd809af77ccc6d9cc9d3eebf7d9850fbf88241e729793189ddbe294f16dca07dfbdc6b50cb7b9e534fb26d0735a61eb4d8584f8a356712ac1  display.conf
+"

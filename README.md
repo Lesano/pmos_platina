@@ -14,7 +14,7 @@ Xiaomi Mi 8 Lite (`xiaomi-platina`, SDM660) using the
 | Display + console  | Working with the patch in `patches/` (sharp image) |
 | Backlight (WLED)   | Working                                            |
 | ADSP / CDSP        | Running with firmware from the stock `modem` partition |
-| Touch (NT36672A)   | Working (raw events verified; calibration not checked) |
+| Touch (NT36672A)   | Working (axes and range verified, multitouch)      |
 | Wi-Fi, modem, audio| Not working yet (audio: `No dais found in DT`)    |
 
 ## What was wrong with the display

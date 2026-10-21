@@ -14,7 +14,7 @@ Xiaomi Mi 8 Lite (`xiaomi-platina`, SDM660) using the
 | Display + console  | Working with the patch in `patches/` (sharp image) |
 | Backlight (WLED)   | Working                                            |
 | ADSP / CDSP        | Running with firmware from the stock `modem` partition |
-| Touch (NT36672A)   | Not working (`Error reading from 0x00: -6`)        |
+| Touch (NT36672A)   | Working (raw events verified; calibration not checked) |
 | Wi-Fi, modem, audio| Not working yet (audio: `No dais found in DT`)    |
 
 ## What was wrong with the display
@@ -78,3 +78,28 @@ image with `mkbootimg` using the offsets from `deviceinfo`, then
 - Missing watchdog node
 - Wi-Fi (`wlanmdsp.mbn`, `bdwlan.*`), modem (`mba.mbn`, `modem.*`), audio
 - Make the display DTB permanent in the pmbootstrap kernel package
+
+## Known issues
+
+- `WARNING: drivers/clk/qcom/clk-rcg2.c:136` at boot:
+  `mdp_clk_src: rcg didn't update its configuration.` Triggered while
+  `msm` loads (`dpu_kms_init` -> `clk_set_rate`). Display and touch work
+  afterwards. Not investigated yet.
+- `novatek-nvt-ts: Error reading from 0x00: -6` and
+  `supply vcc not found` appear early in boot, before the panel is on
+  (the NT36672A is a TDDI chip). Touch works once the display is up.
+- No Wi-Fi, modem or audio yet (`No dais found in DT`).
+- `qcom_sns_reg` cannot find `qcom/sensors/sns.reg` (sensor registry
+  firmware is not packaged).
+- The device boots only through `scripts/boot-platina.sh`
+  (`fastboot boot`); `flash_kernel` is intentionally not used.
+
+## Packages
+
+- `pmaports/firmware-xiaomi-platina`: ADSP/CDSP firmware (blobs not included)
+- `pmaports/platina-tweaks`: elogind without suspend, NetworkManager
+  ignoring `usb0`, display modules loaded at boot
+
+Build with `pmbootstrap build <pkg>` and enable with
+`pmbootstrap config extra_packages firmware-xiaomi-platina,platina-tweaks`
+(UI: `console`).

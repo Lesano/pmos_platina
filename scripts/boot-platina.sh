@@ -3,8 +3,7 @@
 set -e
 CH=~/platinapmos/work/chroot_rootfs_xiaomi-platina/boot
 DTB=~/kernel-src/linux/arch/arm64/boot/dts/qcom/sdm660-xiaomi-platina.dtb
-CMD="clk_ignore_unused pd_ignore_unused regulator_ignore_unused consoleblank=0"
-[ "$1" = "debug" ] && CMD="$CMD pmos.debug-shell"
+CMD="clk_ignore_unused pd_ignore_unused regulator_ignore_unused consoleblank=0 video=DSI-1:1080x2280@60"
 
 cat $CH/vmlinuz $DTB > /tmp/kernel-dtb
 mkbootimg --kernel /tmp/kernel-dtb --ramdisk $CH/initramfs \

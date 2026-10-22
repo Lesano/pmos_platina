@@ -1,0 +1,11 @@
+[terminal]
+vt = 7
+
+[default_session]
+command = "/bin/bash /etc/phrog/session.sh"
+user = "greetd"
+
+# The session to be used on boot
+#[initial_session]
+#command = "systemd-cat phosh-session"
+#user = "username"

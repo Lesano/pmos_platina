@@ -11,10 +11,12 @@ Xiaomi Mi 8 Lite (`xiaomi-platina`, SDM660) using the
 |--------------------|----------------------------------------------------|
 | Boot (fastboot)    | Working                                            |
 | USB networking/SSH | Working (see "Stability fixes")                    |
-| Display + console  | Working with the patch in `patches/` (sharp image) |
+| Display + console  | Working (panel mode is 1080x2246, see Known issues) |
 | Backlight (WLED)   | Working                                            |
 | ADSP / CDSP        | Running with firmware from the stock `modem` partition |
 | Touch (NT36672A)   | Working (axes and range verified, multitouch)      |
+| GPU (Adreno 512)   | Working with freedreno (FD512), needs `FD_MESA_DEBUG=noubwc` |
+| Phosh              | Working, animations smooth                         |
 | Wi-Fi, modem, audio| Not working yet (audio: `No dais found in DT`)    |
 
 ## What was wrong with the display
@@ -103,3 +105,44 @@ image with `mkbootimg` using the offsets from `deviceinfo`, then
 Build with `pmbootstrap build <pkg>` and enable with
 `pmbootstrap config extra_packages firmware-xiaomi-platina,platina-tweaks`
 (UI: `console`).
+
+## GPU (Adreno 512)
+
+Enabled in the DTS with `&gpucc`, `&adreno_gpu` and
+`&adreno_gpu_zap { firmware-name = "a512_zap.mdt"; }`. The zap shader
+(`a512_zap.mdt` + `.b00`-`.b02`) comes from the stock `vendor`
+partition (`firmware/` directory); extract it from `vendor.img` of the
+MIUI fastboot ROM (`simg2img`, then loop-mount). The generic
+`a530_pm4.fw` / `a530_pfp.fw` come from `linux-firmware-qcom`.
+Mesa reports `FD512` (freedreno).
+
+Warnings still present: `supply vdd/vddcx not found, using dummy regulator`.
+
+## Phosh
+
+UI: `pmbootstrap config ui phosh`. Notes:
+
+- greetd/phrog reads `/etc/phrog/greetd-config.toml`. A wrapper
+  `/etc/phrog/session.sh` is used as `command`; its first line must be
+  `#!/bin/bash` with no blank line before it (otherwise `Exec format error`).
+- The kernel has no usable ramoops/syslog by default: start `syslog`
+  and read `logread` for session errors.
+- Before the GPU worked, `WLR_RENDERER=pixman` and `GSK_RENDERER=cairo`
+  were needed. They are no longer needed; `GSK_RENDERER=cairo` makes the
+  UI feel laggy.
+- With UBWC enabled some glyphs disappear. Workaround:
+  `FD_MESA_DEBUG=noubwc` (set in `/etc/environment` or the session wrapper).
+
+## Boot flow
+
+`flash_kernel` is not used. Put the device in fastboot and run
+`scripts/boot-platina.sh` (builds a boot image from the pmbootstrap
+kernel + the patched DTB and runs `fastboot boot`). Add `debug` to get the
+initramfs debug shell on telnet (`172.16.42.1`).
+
+- Panel mode: `tianma,fhd-video` is the Poco F1 panel mode (1080x2246),
+  the Mi 8 Lite is 1080x2280, so the last lines are duplicated at the
+  bottom. `video=DSI-1:1080x2280@60` did not help. Needs a platina-specific
+  mode (timings from the downstream DTS) in `panel-novatek-nt36672a`.
+- `iio-sensor-proxy` and `modemmanager` fail (no sensor registry
+  firmware, no modem yet).

@@ -1,3 +1,12 @@
+From dcd4e68b866a550f6901879d87401c1bf466d9a1 Mon Sep 17 00:00:00 2001
+From: Lesano <leandronogueira@sapo.pt>
+Date: Fri, 23 Oct 2026 21:22:33 +0100
+Subject: [PATCH 1/2] sdm660-xiaomi-platina: enable display
+
+---
+ .../boot/dts/qcom/sdm660-xiaomi-platina.dts   | 80 ++++++++++++++++++-
+ 1 file changed, 77 insertions(+), 3 deletions(-)
+
 diff --git a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-platina.dts b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-platina.dts
 index 2ca576b05..1f84f9282 100644
 --- a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-platina.dts
@@ -114,3 +123,6 @@ index 2ca576b05..1f84f9282 100644
 +&adreno_gpu_zap {
 +	firmware-name = "a512_zap.mdt";
 +};
+-- 
+2.56.0
+

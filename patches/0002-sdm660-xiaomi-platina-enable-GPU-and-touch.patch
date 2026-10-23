@@ -1,0 +1,25 @@
+From f9ae36af82dc09e623ae6030ee82cacd9fc415ed Mon Sep 17 00:00:00 2001
+From: Lesano <leandronogueira@sapo.pt>
+Date: Fri, 23 Oct 2026 21:22:44 +0100
+Subject: [PATCH 2/2] sdm660-xiaomi-platina: enable GPU and touch
+
+---
+ arch/arm64/boot/dts/qcom/sdm660-xiaomi-platina.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-platina.dts b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-platina.dts
+index 1f84f9282..a4957b10e 100644
+--- a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-platina.dts
++++ b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-platina.dts
+@@ -818,7 +818,7 @@ &mdss_dsi0 {
+ 	vdda-supply = <&vreg_l1a_1p225>;
+ 
+ 	panel: panel@0 {
+-		compatible = "tianma,fhd-video", "novatek,nt36672a";
++		compatible = "tianma,fhd-video-platina", "tianma,fhd-video", "novatek,nt36672a";
+ 		reg = <0>;
+ 
+ 		reset-gpios = <&tlmm 53 GPIO_ACTIVE_LOW>;
+-- 
+2.56.0
+
